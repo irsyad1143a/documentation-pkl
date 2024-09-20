@@ -144,29 +144,6 @@ h2 {
   display: none;
 }
 
-@media (max-width: 600px) {
-  #searchInput {
-    width: 60%;
-  }
-
-  header h1 {
-    font-size: 24px;
-  }
-
-  main {
-    width: 95%;
-  }
-
-  .photo-container {
-    width: 150px;
-    height: 112.5px; /* Maintaining 4:3 aspect ratio */
-  }
-
-  .photo p {
-    font-size: 12px;
-  }
-}
-
 @media (max-width: 440px) {
   #searchInput {
     width: 80%;
