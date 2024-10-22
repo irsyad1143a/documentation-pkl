@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const photos = document.querySelectorAll(".photo");
   const monthSections = document.querySelectorAll(".month-section");
   const main = document.querySelector("main");
+  const popupOverlay = document.querySelector(".popup-overlay");
+  const popupImage = document.querySelector(".popup-image");
+  const popupCaption = document.querySelector(".popup-caption");
+  const backButton = document.querySelector(".back-button");
 
   // Create a new element for the "not found" message
   const notFoundMessage = document.createElement("div");
@@ -11,6 +15,46 @@ document.addEventListener("DOMContentLoaded", function () {
   notFoundMessage.textContent = "Gambar tidak ditemukan";
   notFoundMessage.style.display = "none";
   main.appendChild(notFoundMessage);
+
+  // Function to open popup
+  function openPopup(imageSrc, caption) {
+    popupImage.src = imageSrc;
+    popupCaption.textContent = caption;
+    popupOverlay.style.display = "flex";
+    document.body.style.overflow = "hidden"; // Prevent scrolling
+  }
+
+  // Function to close popup
+  function closePopup() {
+    popupOverlay.style.display = "none";
+    document.body.style.overflow = "auto"; // Restore scrolling
+  }
+
+  // Add click event listeners to photos
+  photos.forEach((photo) => {
+    photo.addEventListener("click", () => {
+      const img = photo.querySelector("img");
+      const caption = photo.querySelector("p").textContent;
+      openPopup(img.src, caption);
+    });
+  });
+
+  // Add click event listener to back button
+  backButton.addEventListener("click", closePopup);
+
+  // Close popup when clicking outside the image
+  popupOverlay.addEventListener("click", (e) => {
+    if (e.target === popupOverlay) {
+      closePopup();
+    }
+  });
+
+  // Close popup with Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closePopup();
+    }
+  });
 
   // Function to filter photos based on search input and selected month
   function filterPhotos() {
@@ -26,17 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const matchesSearch = photoText.includes(searchTerm);
 
       if (matchesMonth && matchesSearch) {
-        photo.style.display = "flex"; // Show the photo
+        photo.style.display = "flex";
         foundPhotos = true;
       } else {
-        photo.style.display = "none"; // Hide the photo
+        photo.style.display = "none";
       }
     });
 
-    // Update the visibility of the month sections based on filtered photos
     updateMonthSectionsVisibility();
-
-    // Show or hide the "not found" message
     notFoundMessage.style.display = foundPhotos ? "none" : "block";
   }
 
@@ -59,6 +100,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Event listener for search input
   searchInput.addEventListener("input", filterPhotos);
+
+  // Prevent context menu on images
+  document.addEventListener("contextmenu", (e) => {
+    if (e.target.tagName === "IMG") {
+      e.preventDefault();
+    }
+  });
 
   // Initial display of all photos
   filterPhotos();
